@@ -9,7 +9,7 @@ Set up the DSM toolchain as per https://help.synology.com/developer-guide/create
 
 Then, inside the "source" directory clone this repository including submodules:
 
-    git clone https://github.com/mzanetti/nymea-sonology-package nymea
+    git clone https://github.com/mzanetti/nymea-synology-package nymea
     cd nymea
     git submodule update --init
 
