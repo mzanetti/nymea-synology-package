@@ -23,4 +23,4 @@ See: https://github.com/SynologyOpenSource/pkgscripts-ng/issues/33
 
 After this, build with synology's PkgCreate:
 
-    sudo ./pkgscripts/PkgCreate.py -v 6.0 -p x64 nymea
+    ./pkgscripts-ng/PkgCreate.py -v 6.0 -p x64 nymea
