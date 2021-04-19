@@ -1,0 +1,30 @@
+[submodule "qtbase"]
+	path = qtbase
+	url = https://github.com/qt/qtbase
+[submodule "qtserialport"]
+	path = qtserialport
+	url = http://github.com/qt/qtserialport
+[submodule "nymea-zigbee"]
+	path = nymea-zigbee
+	url = https://github.com/nymea/nymea-zigbee
+[submodule "nymea"]
+	path = nymea
+	url = https://github.com/nymea/nymea
+[submodule "qtconnectivity"]
+	path = qtconnectivity
+	url = https://github.com/qt/qtconnectivity
+[submodule "libnymea-networkmanager"]
+	path = libnymea-networkmanager
+	url = http://github.com/nymea/libnymea-networkmanager
+[submodule "qtwebsockets"]
+	path = qtwebsockets
+	url = http://github.com/qt/qtwebsockets
+[submodule "qtdeclarative"]
+	path = qtdeclarative
+	url = https://github.com/qt/qtdeclarative
+[submodule "nymea-remoteproxy"]
+	path = nymea-remoteproxy
+	url = https://github.com/nymea/nymea-remoteproxy
+[submodule "nymea-mqtt"]
+	path = nymea-mqtt
+	url = http://github.com/nymea/nymea-mqtt

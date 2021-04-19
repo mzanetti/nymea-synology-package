@@ -1,0 +1,86 @@
+#!/bin/bash
+# Copyright (C) 2000-2016 Synology Inc. All rights reserved.
+
+### Use PKG_DIR as working directory.
+PKG_DIR=/tmp/_test_spk
+rm -rf $PKG_DIR
+mkdir -p $PKG_DIR
+
+### get spk packing functions
+source /pkgscripts-ng/include/pkg_util.sh
+
+create_inner_tarball() {
+    local inner_tarball_dir=/tmp/_inner_tarball
+
+    ### clear destination directory
+    rm -rf $inner_tarball_dir && mkdir -p $inner_tarball_dir
+
+    ### install needed file into PKG_DIR
+    echo "starting install:"
+    pwd
+
+    cd qtbase
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd qtserialport
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd qtconnectivity
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd qtwebsockets
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd nymea-zigbee
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd nymea-remoteproxy
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    cd nymea-mqtt
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+    cd libnymea-networkmanager
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+    cd nymea
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
+    ### create package.txz: $1=source_dir, $2=dest_dir
+    pkg_make_inner_tarball $inner_tarball_dir "${PKG_DIR}"
+}
+
+create_spk(){
+    local scripts_dir=$PKG_DIR/scripts
+
+    ### Copy Package Center scripts to PKG_DIR
+    mkdir -p $scripts_dir
+#    cp -av scripts/* $scripts_dir
+
+    ### Copy package icon
+#    cp -av PACKAGE_ICON*.PNG $PKG_DIR
+
+    ### Generate INFO file
+    pwd
+    ./INFO.sh > INFO
+    cp INFO $PKG_DIR/INFO
+
+    ### Create the final spk.
+    # pkg_make_spk <source path> <dest path> <spk file name>
+    # Please put the result spk into /image/packages
+    # spk name functions: pkg_get_spk_name pkg_get_spk_unified_name pkg_get_spk_family_name
+    mkdir -p /image/packages
+    pkg_make_spk ${PKG_DIR} "/image/packages" $(pkg_get_spk_family_name)
+
+    echo "****************** DONE ******************"
+}
+
+create_inner_tarball
+create_spk

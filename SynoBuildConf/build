@@ -1,0 +1,115 @@
+#!/bin/bash -ex
+
+case ${MakeClean} in
+       [Yy][Ee][Ss])
+#               make distclean
+               ;;
+esac
+
+echo "DebDevDir: $DebDevDir"
+echo "SysRootPrefix: ${SysRootPrefix}"
+echo "PATH: $PATH"
+
+#exit 1
+
+#export NYME_WORKDIR=/testdir/
+#export NYMEA_WORKDIR/INSTALL_ROOT=$DebDevDir
+export INSTALL_ROOT=/usr/local/sysroot/
+export PKG_CONFIG_PATH="${SysRootPrefix}/lib/pkgconfig/"
+
+# To me it seems the syno sysroot is configured wrong. It uses
+# pkgconfig files from /usr, but somehow is still configured to
+# include/link from /usr/local/sysroot. To get around this, we'll
+# make install to both of them
+make_install() {
+  INSTALL_ROOT=/ make install
+  INSTALL_ROOT=/usr/local/sysroot/ make install
+}
+
+pwd
+echo "INSTALL_ROOT: $INSTALL_ROOT"
+echo "PKG_CONFIG_PATH: $PKG_CONFIG_PATH"
+echo "ARCH: $ARCH"
+echo "SYNO_PLATFORM: $SYNO_PLATFORM"
+echo "CXX: $CXX"
+#exit 1
+
+case $SYNO_PLATFORM in
+    MARVELL_88F6281)
+        echo "Marvell 88F628x toolchain does not support c++11 which is required for Qt and nymea"
+        exit 1
+        ;;
+    x64)
+        echo "Building for x64 platform"
+        QMAKE_PLATFORM=linux-g++-64
+        ;;
+    *)
+        echo "Unsupported platform: $SYNO_PLATFORM"
+        exit 1
+        ;;
+esac
+
+# Build Qtbase
+cd qtbase
+./configure -opensource -confirm-license -no-opengl -ccache --prefix=/usr/ -xplatform $QMAKE_PLATFORM
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+# QtSerialport
+cd qtserialport
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+# QtConnectivity
+cd qtconnectivity
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd qtwebsockets
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd qtdeclarative
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd nymea-zigbee
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd nymea-mqtt
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd libnymea-networkmanager
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd nymea-remoteproxy
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd nymea
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+echo "!!DONE!!"

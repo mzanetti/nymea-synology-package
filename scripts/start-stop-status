@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case ${1} in
+       start)
+               nymead
+               ;;
+       stop)
+               killall nymead
+               ;;
+esac
+
+exit 0
