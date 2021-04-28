@@ -59,6 +59,9 @@ create_inner_tarball() {
     cd nymea-zeroconf-plugin-avahi
     INSTALL_ROOT="$inner_tarball_dir" make install
     cd ..
+    cd nymea-plugins
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
 
     ### create package.txz: $1=source_dir, $2=dest_dir
     pkg_make_inner_tarball $inner_tarball_dir "${PKG_DIR}"

@@ -4,7 +4,7 @@
 source /pkgscripts-ng/include/pkg_util.sh
 
 package="nymea"
-version="0.26.0"
+version="0.27.0"
 displayname="nymea"
 maintainer="nymea GmbH"
 arch="$(pkg_get_unified_platform)"
