@@ -31,6 +31,10 @@ create_inner_tarball() {
     INSTALL_ROOT="$inner_tarball_dir" make install
     cd ..
 
+    cd qtdeclarative
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
+
     cd qtwebsockets
     INSTALL_ROOT="$inner_tarball_dir" make install
     cd ..
@@ -52,6 +56,9 @@ create_inner_tarball() {
     cd nymea
     INSTALL_ROOT="$inner_tarball_dir" make install
     cd ..
+    cd nymea-zeroconf-plugin-avahi
+    INSTALL_ROOT="$inner_tarball_dir" make install
+    cd ..
 
     ### create package.txz: $1=source_dir, $2=dest_dir
     pkg_make_inner_tarball $inner_tarball_dir "${PKG_DIR}"
@@ -62,10 +69,10 @@ create_spk(){
 
     ### Copy Package Center scripts to PKG_DIR
     mkdir -p $scripts_dir
-#    cp -av scripts/* $scripts_dir
+    cp -av scripts/* $scripts_dir
 
     ### Copy package icon
-#    cp -av PACKAGE_ICON*.PNG $PKG_DIR
+    cp -av PACKAGE_ICON*.PNG $PKG_DIR
 
     ### Generate INFO file
     pwd

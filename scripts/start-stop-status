@@ -1,12 +1,75 @@
 #!/bin/sh
 
-case ${1} in
-       start)
-               nymead
-               ;;
-       stop)
-               killall nymead
-               ;;
+LOG="/var/packages/nymea/log"
+
+DAEMON='nymead'
+DAEMON_ARGS='-n'
+
+PACKAGE_NAME="nymea"
+
+PACKAGE_DIR="/var/packages/${PACKAGE_NAME}"
+PACKAGE_TARGET="${PACKAGE_DIR}/target"
+
+STATUS_RUNNING=0
+STATUS_DEAD=1
+STATUS_DEAD_BUT_LOCK_EXISTS=2
+STATUS_NOT_RUNNING=3
+STATUS_UNKNOWN=4
+STATUS_BROKEN=150
+
+export SNAP=1
+export SNAP_DATA=$PACKAGE_NAME/etc
+export SNAP_COMMON=$PACKAGE_TARGET
+export QT_PLUGIN_PATH=$PACKAGE_TARGET/usr/plugins
+export LD_LIBRARY_PATH=$PACKAGE_TARGET/usr/lib
+
+daemon_status ()
+{
+    /usr/bin/ps aux | grep "${DAEMON}" | grep -v grep
+    return $?
+}
+
+case $1 in
+	start)
+		if daemon_status; then
+			echo ${DAEMON} is already running
+			exit 0
+		else
+			echo Starting ${DAEMON} ...
+			/usr/bin/killall -9 ${DAEMON}
+			${PACKAGE_TARGET}/usr/bin/${DAEMON} ${DAEMON_ARGS} &
+			echo "Started nymea" > $SYNOPKG_TEMP_LOGFILE
+		exit $?
+		fi
+		;;
+
+	stop)
+		if daemon_status; then
+			echo Stopping ${DAEMON} ...
+			/usr/bin/killall -15 ${DAEMON}
+			echo "Stopped nymea" > $SYNOPKG_TEMP_LOGFILE
+			exit 0
+		else
+			echo ${DNAME} is not running
+			exit 0
+		fi
+		;;
+
+	status)
+	#	if (( $(/usr/bin/ps aux | grep $DAEMON | wc -l) == 1 )) ; then
+		if daemon_status; then
+			echo ${DAEMON} is running
+			exit 0
+		else
+			echo ${DAEMON} is not running
+		exit 1
+		fi
+		;;
+	log)
+                echo "Not supported yet"
+		exit 0
+		;;
 esac
 
-exit 0
+exit 1
+

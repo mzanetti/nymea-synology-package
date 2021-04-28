@@ -28,3 +28,9 @@
 [submodule "nymea-mqtt"]
 	path = nymea-mqtt
 	url = http://github.com/nymea/nymea-mqtt
+[submodule "nymea-zeroconf-plugin-avahi"]
+	path = nymea-zeroconf-plugin-avahi
+	url = https://github.com/nymea/nymea-zeroconf-plugin-avahi
+[submodule "nymea-plugins"]
+	path = nymea-plugins
+	url = https://github.com/nymea/nymea-plugins

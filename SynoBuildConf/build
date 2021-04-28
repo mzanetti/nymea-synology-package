@@ -6,6 +6,9 @@ case ${MakeClean} in
                ;;
 esac
 
+echo "*** Build environment ***"
+env
+
 echo "DebDevDir: $DebDevDir"
 echo "SysRootPrefix: ${SysRootPrefix}"
 echo "PATH: $PATH"
@@ -34,14 +37,24 @@ echo "SYNO_PLATFORM: $SYNO_PLATFORM"
 echo "CXX: $CXX"
 #exit 1
 
+QMAKE_FLAGS=""
+
 case $SYNO_PLATFORM in
     MARVELL_88F6281)
         echo "Marvell 88F628x toolchain does not support c++11 which is required for Qt and nymea"
         exit 1
         ;;
+#    MARVELL_ARMADA38X)
+#        echo "Building for Marvell armada38x platform";
+#        QMAKE_FLAGS="-xplatform linux-arm-gnueabi-g++ -device linux-arm-marvell-armada38x-g++"
+#        ;;
+    GEMINILAKE)
+        echo "Building for geminilake platform";
+        QMAKE_FLAGS="-xplatform linux-g++-64"
+        ;;
     x64)
         echo "Building for x64 platform"
-        QMAKE_PLATFORM=linux-g++-64
+        QMAKE_FLAGS="-xplatform linux-g++-64"
         ;;
     *)
         echo "Unsupported platform: $SYNO_PLATFORM"
@@ -49,9 +62,18 @@ case $SYNO_PLATFORM in
         ;;
 esac
 
+export PKG_CONFIG_SYSROOT_DIR=/
+#${SysRootPrefix}
+#/usr/local/sysroot/usr
+export PKG_CONFIG_LIBDIR=/usr/local/sysroot/usr/lib
+
+export CPATH=${SysRootInclude}
+export LIBRARY_PATH=${SysRootLib}
+
 # Build Qtbase
 cd qtbase
-./configure -opensource -confirm-license -no-opengl -ccache --prefix=/usr/ -xplatform $QMAKE_PLATFORM
+echo "QMAKE_FLAGS=${QMAKE_FLAGS}"
+./configure -opensource -confirm-license -no-opengl -ccache --prefix=/usr/ $QMAKE_FLAGS -R ${SysRootLib} #-sysroot ${ToolChainSysRoot}
 make ${MAKE_FLAGS}
 make_install
 cd ..
@@ -106,10 +128,23 @@ make ${MAKE_FLAGS}
 make_install
 cd ..
 
+export LIBRARY_PATH=${SysRootLib}
+
 cd nymea
 qmake
 make ${MAKE_FLAGS}
 make_install
+cd ..
+
+cd nymea-zeroconf-plugin-avahi
+qmake
+make ${MAKE_FLAGS}
+make_install
+cd ..
+
+cd nymea-plugins
+qmake WITHOUT_PLUGINS="boblight onewire usbrelay"
+make ${MAKE_FLAGS}
 cd ..
 
 echo "!!DONE!!"
