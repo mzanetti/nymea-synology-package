@@ -52,7 +52,7 @@ case $SYNO_PLATFORM in
         echo "Building for geminilake platform";
         QMAKE_FLAGS="-xplatform linux-g++-64"
         ;;
-    x64)
+    X64)
         echo "Building for x64 platform"
         QMAKE_FLAGS="-xplatform linux-g++-64"
         ;;
